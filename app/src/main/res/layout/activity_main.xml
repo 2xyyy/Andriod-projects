@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E1FBF3"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="716dp"
+        android:text="清屏"
+        android:textColor="@color/black"
+        app:backgroundTint="#90F2D5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="保存"
+        android:textColor="@color/black"
+        app:backgroundTint="#90F2D5"
+        app:layout_constraintEnd_toStartOf="@+id/button_clear"
+        app:layout_constraintTop_toTopOf="@+id/button_clear" />
+
+    <Button
+        android:id="@+id/button_changehistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="修改历史"
+        android:textColor="@color/black"
+        app:backgroundTint="#90F2D5"
+        app:layout_constraintStart_toEndOf="@+id/button_clear"
+        app:layout_constraintTop_toTopOf="@+id/button_clear" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="33dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/home" />
+
+    <Spinner
+        android:id="@+id/color_spinner"
+        android:layout_width="86dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#E2D6AC"
+        android:entries="@array/color_options"
+        android:prompt="@string/select_color"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/DrawingBoard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.example.exp1.DrawingBoardView
+        android:id="@+id/DrawingBoard"
+        android:layout_width="418dp"
+        android:layout_height="433dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="122dp"
+        tools:layout_editor_absoluteY="703dp"
+        tools:ignore="MissingConstraints">
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/music_play"
+        android:layout_width="65dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/music_play"
+        app:layout_constraintBottom_toTopOf="@+id/DrawingBoard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.098"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/music_pause"
+        android:layout_width="65dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/music_pause"
+        app:layout_constraintBottom_toTopOf="@+id/DrawingBoard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.352"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

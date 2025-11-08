@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">exp1</string>
+
+    <string name="select_color">选择画笔颜色</string>
+
+    <string-array name="color_options">
+        <item>red</item>
+        <item>green</item>
+        <item>blue</item>
+        <item>black</item>
+    </string-array>
+</resources>
