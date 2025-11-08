@@ -4,8 +4,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,11 +71,25 @@ public class MyClass{
                 return;
             }
 
-            // handle file download logic here
-            String query = exchange.getRequestURI().getQuery();
+            File file = new File("history.txt");
+            StringBuilder sb = new StringBuilder();
 
-            //return a simple response
-            sendResponse(exchange, 200, "Download Successful!");
+            if (file.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line).append("\n");
+                    }
+                } catch (IOException e) {
+                    sendResponse(exchange, 500, "读取历史文件失败");
+                    return;
+                }
+            } else {
+                sb.append("没有上传记录\n");
+            }
+
+            // ✅ 返回文件内容给客户端
+            sendResponse(exchange, 200, sb.toString());
         }
     }
 
