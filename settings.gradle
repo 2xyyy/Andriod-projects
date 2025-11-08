@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "exp1"
 include ':app'
+include ':localserver'
