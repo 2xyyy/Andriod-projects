@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/simple_upload_server.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/simple_upload_server.py" />
+              <option name="updatedContent" value="#!/usr/bin/env python3&#10;from http.server import HTTPServer, BaseHTTPRequestHandler&#10;import cgi&#10;&#10;class UploadHandler(BaseHTTPRequestHandler):&#10;    def do_POST(self):&#10;        if self.path != '/Upload':&#10;            self.send_response(404)&#10;            self.end_headers()&#10;            self.wfile.write(b'Not Found')&#10;            return&#10;&#10;        ctype, pdict = cgi.parse_header(self.headers.get('content-type', ''))&#10;        length = int(self.headers.get('content-length', 0))&#10;&#10;        try:&#10;            if ctype == 'multipart/form-data':&#10;                fs = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={'REQUEST_METHOD':'POST'}, keep_blank_values=True)&#10;                if 'image' in fs:&#10;                    fileitem = fs['image']&#10;                    filename = fileitem.filename or 'uploaded.bin'&#10;                    data = fileitem.file.read()&#10;                    with open(filename, 'wb') as f:&#10;                        f.write(data)&#10;                    print(f&quot;Saved uploaded file: {filename} ({len(data)} bytes)&quot;)&#10;                # optional: save other form fields&#10;                name = fs.getvalue('name') if 'name' in fs else None&#10;                ts = fs.getvalue('timestamp') if 'timestamp' in fs else None&#10;                print('name=', name, 'timestamp=', ts)&#10;                self.send_response(200)&#10;                self.end_headers()&#10;                self.wfile.write(b'Upload Successful!')&#10;            else:&#10;                # read raw body&#10;                data = self.rfile.read(length)&#10;                with open('upload_body.bin', 'wb') as f:&#10;                    f.write(data)&#10;                print(f&quot;Saved raw upload body ({len(data)} bytes)&quot;)&#10;                self.send_response(200)&#10;                self.end_headers()&#10;                self.wfile.write(b'Upload Received')&#10;        except Exception as e:&#10;            print('Error handling upload:', e)&#10;            self.send_response(500)&#10;            self.end_headers()&#10;            self.wfile.write(b'Internal Server Error')&#10;&#10;if __name__ == '__main__':&#10;    server_address = ('', 8080)&#10;    httpd = HTTPServer(server_address, UploadHandler)&#10;    print('Starting simple upload server on port 8080...')&#10;    try:&#10;        httpd.serve_forever()&#10;    except KeyboardInterrupt:&#10;        print('Shutting down')&#10;        httpd.server_close()&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

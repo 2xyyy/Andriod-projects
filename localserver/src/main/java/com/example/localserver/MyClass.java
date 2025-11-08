@@ -4,10 +4,19 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 public class MyClass{
+    private static final Logger logger = Logger.getLogger(MyClass.class.getName());
     private static final int PORT = 8080;
     public static void main(String[] args) throws IOException {
         // create a simple HTTP server that listens on PORT
@@ -18,6 +27,7 @@ public class MyClass{
         server.createContext("/Download",new DownloadHandler());
 
         // start the server
+        server.setExecutor(null);
         server.start();
     }
 
@@ -29,8 +39,22 @@ public class MyClass{
                 return;
             }
 
-            // handle file upload logic here
-            String query = exchange.getRequestURI().getQuery();
+            // 读取 POST 请求体
+            InputStream inputStream = exchange.getRequestBody();
+            String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            String decoded = URLDecoder.decode(body, StandardCharsets.UTF_8);
+            System.out.println("📩 解码后的请求体:\n" + decoded);
+
+            // 提取 data 值
+            String value = decoded.substring(decoded.indexOf('=') + 1);
+
+            // 保存到文件 history.txt（追加模式）
+            File file = new File("history.txt");
+            try (FileWriter fw = new FileWriter(file, true);
+                 BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(value);
+                bw.newLine();
+            }
 
             //return a simple response
             sendResponse(exchange, 200, "Upload Successful!");
@@ -55,7 +79,8 @@ public class MyClass{
 
     private static void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
         exchange.sendResponseHeaders(statusCode, response.length());
-        exchange.getResponseBody().write(response.getBytes());
-        exchange.getResponseBody().close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(response.getBytes());
+        }
     }
 }

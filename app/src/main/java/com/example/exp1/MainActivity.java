@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -25,6 +26,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,10 +38,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import android.util.Log;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DrawingBoardView drawingBoard;
 
@@ -151,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     savePicture(imageName);
                     saveToInternalStorage(imageName + "," + timeStamp+"\n");
-//                    saveToInternalStorage("imagename:" + imageName + "\ntimestamp:" + timeStamp);
+                    saveToServer(imageName + "," + timeStamp+"\n");
                 })
                 .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
                 .show();
@@ -199,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /** 打开历史记录界面 */
     private void openHistoryActivity() {
         Intent intent = new Intent(this, HistoryActivity.class);
-        intent.putExtra("user","test");
+        intent.putExtra("user", "test");
         startActivity(intent);
     }
 
@@ -241,5 +257,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
             Toast.makeText(this, "保存失败", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** 保存修改历史到服务器 */
+    private void saveToServer(String content) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("data", content)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://10.0.2.2:8080/Upload") // 替换为你的服务器URL
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("MainActivity", "保存到服务器失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.i("MainActivity", "保存到服务器成功");
+                } else {
+                    Log.e("MainActivity", "服务器响应失败: " + response.message());
+                }
+            }
+        });
     }
 }
